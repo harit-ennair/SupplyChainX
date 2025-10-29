@@ -17,6 +17,6 @@ public class RawMaterial {
     private Integer stockMin;
     private String unit;
 
-    @OneToMany(mappedBy = "material")
-    private List<SupplierMaterial> supplierMaterials;
+    @ManyToMany(mappedBy = "materials")
+    private List<Supplier> suppliers;
 }
