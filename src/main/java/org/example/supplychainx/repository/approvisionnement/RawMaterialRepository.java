@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RawMaterialRepository extends JpaRepository<RawMaterial, Long> {
+public interface  RawMaterialRepository extends JpaRepository<RawMaterial, Long> {
 
     List<RawMaterial> findByStockLessThan(Integer stockMin);
 }
