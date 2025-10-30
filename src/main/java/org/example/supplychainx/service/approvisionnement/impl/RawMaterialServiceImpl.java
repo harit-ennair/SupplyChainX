@@ -1,4 +1,65 @@
 package org.example.supplychainx.service.approvisionnement.impl;
 
-public class RawMaterialServiceImpl {
+import lombok.RequiredArgsConstructor;
+import org.example.supplychainx.dto.approvisionnement.RawMaterialDTO;
+import org.example.supplychainx.mapper.approvisionnement.RawMaterialMapper;
+import org.example.supplychainx.repository.approvisionnement.RawMaterialRepository;
+import org.example.supplychainx.repository.approvisionnement.SupplyMaterialRepository;
+import org.example.supplychainx.service.approvisionnement.RawMaterialService;
+import org.springframework.stereotype.Service;
+
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class RawMaterialServiceImpl implements RawMaterialService {
+
+    private final RawMaterialRepository rawMaterialRepository;
+    private final SupplyMaterialRepository supplyMaterialRepository;
+    private final RawMaterialMapper mapper;
+
+    @Override
+    public RawMaterialDTO create(RawMaterialDTO dto) {
+        return mapper.toDto(
+                rawMaterialRepository.save(
+                        mapper.toEntity(dto)
+                )
+        );
+    }
+
+    @Override
+    public RawMaterialDTO update(Long id, RawMaterialDTO dto) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+        boolean usedInOrders = supplyMaterialRepository.findAll()
+                .stream()
+                .anyMatch(sm -> sm.getMaterial().getIdMaterial().equals(id));
+
+        if (usedInOrders) {
+            throw new RuntimeException("Impossible de supprimer la matière : utilisée dans une commande.");
+        }
+
+        rawMaterialRepository.deleteById(id);
+    }
+
+    @Override
+    public RawMaterialDTO getById(Long id) {
+        return mapper.toDto(
+                rawMaterialRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Matière première non trouvée"))
+        );
+    }
+
+    @Override
+    public List<RawMaterialDTO> getAll() {
+        return rawMaterialRepository.findAll()
+                .stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
 }

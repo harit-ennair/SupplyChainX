@@ -20,9 +20,6 @@ public class Supplier {
     @OneToMany(mappedBy = "supplier")
     private List<SupplyOrder> orders;
 
-//    @OneToMany(mappedBy = "supplier")
-//    private List<SupplierMaterial> supplierMaterials;
-//
     @ManyToMany
     @JoinTable(
         name = "supplier_material",
