@@ -7,7 +7,6 @@ import org.example.supplychainx.model.common.User;
 import org.example.supplychainx.repository.common.UserRepository;
 import org.example.supplychainx.service.common.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,20 +17,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO create(UserDTO dto) {
 
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email déjà utilisé : " + dto.getEmail());
+            throw new RuntimeException("Un utilisateur avec cet email existe déjà.");
         }
 
         User user = userMapper.toEntity(dto);
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-
         return userMapper.toDto(userRepository.save(user));
     }
+
 
     @Override
     public UserDTO update(Long id, UserDTO dto) {
@@ -47,10 +45,8 @@ public class UserServiceImpl implements UserService {
         if (dto.getRole() != null && dto.getRole() != user.getRole()) {
             user.setRole(dto.getRole());
         }
-
-
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if( dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            user.setPassword(dto.getPassword());
         }
 
         return userMapper.toDto(userRepository.save(user));
