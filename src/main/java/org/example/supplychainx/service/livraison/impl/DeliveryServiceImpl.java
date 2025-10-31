@@ -39,21 +39,35 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public DeliveryDTO update(Long id, DeliveryDTO dto) {
-        return null;
+     Delivery delivery = deliveryRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
+
+        delivery.setStatus(dto.getStatus());
+        return mapper.toDto(deliveryRepo.save(delivery));
     }
 
     @Override
     public void delete(Long id) {
+        Delivery delivery = deliveryRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
+        if (delivery.getStatus() != DeliveryStatusEnum.PLANIFIEE)
+            throw new RuntimeException("Impossible d'annuler une livraison déjà en cours ou terminée.");
 
+        deliveryRepo.delete(delivery);
     }
 
     @Override
     public DeliveryDTO getById(Long id) {
-        return null;
+        return deliveryRepo.findById(id)
+                .map(mapper::toDto)
+                .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
     }
 
     @Override
     public List<DeliveryDTO> getAll() {
-        return List.of();
+        return deliveryRepo.findAll()
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
 }

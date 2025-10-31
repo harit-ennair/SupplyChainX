@@ -10,4 +10,7 @@ import java.util.List;
 public interface ProductionOrderRepository extends JpaRepository<ProductionOrder, Long> {
 
     List<ProductionOrder> findByStatus(ProductionStatusEnum status);
+
+    boolean existsByProductIdProduct(Long id);
 }
+

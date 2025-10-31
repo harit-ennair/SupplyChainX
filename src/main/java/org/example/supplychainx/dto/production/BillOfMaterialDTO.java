@@ -6,5 +6,6 @@ import lombok.Data;
 public class BillOfMaterialDTO {
     private Long idBOM;
     private Long materialId;
+    private Long productId;
     private Integer quantity;
 }

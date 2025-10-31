@@ -30,7 +30,17 @@ public class RawMaterialServiceImpl implements RawMaterialService {
 
     @Override
     public RawMaterialDTO update(Long id, RawMaterialDTO dto) {
-        return null;
+        return mapper.toDto(
+                rawMaterialRepository.findById(id)
+                        .map(existing -> {
+                            existing.setName(dto.getName());
+                            existing.setStock(dto.getStock());
+                            existing.setStockMin(dto.getStockMin());
+                            existing.setUnit(dto.getUnit());
+                            return rawMaterialRepository.save(existing);
+                        })
+                        .orElseThrow(() -> new RuntimeException("Matière première non trouvée"))
+        );
     }
 
     @Override
