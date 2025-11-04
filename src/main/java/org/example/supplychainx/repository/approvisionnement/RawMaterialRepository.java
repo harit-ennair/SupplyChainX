@@ -8,5 +8,10 @@ import java.util.List;
 @Repository
 public interface  RawMaterialRepository extends JpaRepository<RawMaterial, Long> {
 
+
     List<RawMaterial> findByStockLessThan(Integer stockMin);
+
+    RawMaterial findByIdMaterial(Long materalId);
 }
+
+

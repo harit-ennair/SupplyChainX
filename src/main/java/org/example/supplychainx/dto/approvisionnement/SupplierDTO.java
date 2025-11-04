@@ -2,6 +2,8 @@ package org.example.supplychainx.dto.approvisionnement;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class SupplierDTO {
     private Long idSupplier;
@@ -9,4 +11,5 @@ public class SupplierDTO {
     private String contact;
     private Double rating;
     private Integer leadTime;
+    private List<Long> materialIds;
 }
