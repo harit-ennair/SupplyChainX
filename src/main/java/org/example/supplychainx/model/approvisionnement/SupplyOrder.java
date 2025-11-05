@@ -3,6 +3,7 @@ package org.example.supplychainx.model.approvisionnement;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,4 +20,11 @@ public class SupplyOrder {
 
     @ManyToOne
     private Supplier supplier;
+
+
+
+
+
+    @OneToMany(mappedBy = "supplyOrder", cascade = CascadeType.ALL)
+    private List<SupplyMaterial> supplyMaterials;
 }

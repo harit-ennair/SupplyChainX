@@ -2,7 +2,9 @@ package org.example.supplychainx.service.approvisionnement.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.approvisionnement.SupplyOrderDTO;
+import org.example.supplychainx.mapper.approvisionnement.SupplyMaterialMapper;
 import org.example.supplychainx.mapper.approvisionnement.SupplyOrderMapper;
+import org.example.supplychainx.model.approvisionnement.SupplyMaterial;
 import org.example.supplychainx.model.approvisionnement.SupplyOrder;
 import org.example.supplychainx.model.approvisionnement.SupplyOrderStatusEnum;
 import org.example.supplychainx.repository.approvisionnement.SupplyOrderRepository;
@@ -18,12 +20,20 @@ public class SupplyOrderServiceImpl implements SupplyOrderService {
 
     private final SupplyOrderRepository repo;
     private final SupplyOrderMapper mapper;
+    private final SupplyMaterialMapper supplyMaterialMapper;
 
     @Override
     public SupplyOrderDTO create(SupplyOrderDTO dto) {
         SupplyOrder order = mapper.toEntity(dto);
         order.setStatus(SupplyOrderStatusEnum.EN_ATTENTE);
         order.setOrderDate(LocalDate.now());
+        List<SupplyMaterial> materials = dto.getMaterials()
+                .stream()
+                .map(supplyMaterialMapper::toEntity)
+                .toList();
+
+        materials.forEach(material -> material.setSupplyOrder(order));
+        order.setSupplyMaterials(materials);
         return mapper.toDto(repo.save(order));
     }
 
@@ -34,7 +44,23 @@ public class SupplyOrderServiceImpl implements SupplyOrderService {
         if (order.getStatus() == SupplyOrderStatusEnum.RECUE)
             throw new RuntimeException("Impossible de modifier une commande déjà reçue.");
 
-        order.setStatus(dto.getStatus());
+        if (dto.getStatus() != null) {
+            order.setStatus(dto.getStatus());
+        }
+
+        if (dto.getMaterials() != null && !dto.getMaterials().isEmpty()) {
+
+            order.getSupplyMaterials().clear();
+
+            List<SupplyMaterial> materials = dto.getMaterials()
+                    .stream()
+                    .map(supplyMaterialMapper::toEntity)
+                    .toList();
+
+            materials.forEach(material -> material.setSupplyOrder(order));
+            order.getSupplyMaterials().addAll(materials);
+        }
+
         return mapper.toDto(repo.save(order));
     }
 
