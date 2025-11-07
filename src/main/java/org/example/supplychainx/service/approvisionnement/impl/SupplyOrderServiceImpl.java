@@ -83,7 +83,7 @@ public class SupplyOrderServiceImpl implements SupplyOrderService {
 
     @Override
     public List<SupplyOrderDTO> getAll() {
-        return repo.findAll()
+        return repo.findAllWithMaterials()
                 .stream()
                 .map(mapper::toDto)
                 .toList();

@@ -9,8 +9,10 @@ import org.mapstruct.Mapping;
 public interface SupplyOrderMapper {
 
     @Mapping(source = "supplier.idSupplier", target = "supplierId")
+    @Mapping(source = "supplyMaterials", target = "materials")
     SupplyOrderDTO toDto(SupplyOrder entity);
 
     @Mapping(source = "supplierId", target = "supplier.idSupplier")
+    @Mapping(source = "materials", target = "supplyMaterials")
     SupplyOrder toEntity(SupplyOrderDTO dto);
 }

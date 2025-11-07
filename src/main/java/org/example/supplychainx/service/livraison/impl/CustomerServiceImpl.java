@@ -24,9 +24,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO create(CustomerDTO dto) {
 
-        boolean exists = customerRepository.existsByNameIgnoreCase(dto.getName());
+        boolean exists = customerRepository.existsByEmailIgnoreCase(dto.getEmail());
         if (exists) {
-            throw new RuntimeException("Un client avec ce nom existe déjà : " + dto.getName());
+            throw new RuntimeException("Un client avec ce Email existe déjà : " + dto.getEmail());
         }
 
         Customer customer = mapper.toEntity(dto);
@@ -35,6 +35,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO update(Long id, CustomerDTO dto) {
+
+        boolean exists = customerRepository.existsByEmailIgnoreCase(dto.getEmail());
+        if (exists) {
+            throw new RuntimeException("Un client avec ce Email existe déjà : " + dto.getEmail());
+        }
+
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client introuvable (ID=" + id + ")"));
 

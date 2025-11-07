@@ -5,10 +5,12 @@ import org.example.supplychainx.dto.production.ProductionOrderDTO;
 import org.example.supplychainx.mapper.production.ProductionOrderMapper;
 import org.example.supplychainx.model.approvisionnement.RawMaterial;
 import org.example.supplychainx.model.production.BillOfMaterial;
+import org.example.supplychainx.model.production.Product;
 import org.example.supplychainx.model.production.ProductionOrder;
 import org.example.supplychainx.model.production.ProductionStatusEnum;
 import org.example.supplychainx.repository.approvisionnement.RawMaterialRepository;
 import org.example.supplychainx.repository.production.BillOfMaterialRepository;
+import org.example.supplychainx.repository.production.ProductRepository;
 import org.example.supplychainx.repository.production.ProductionOrderRepository;
 import org.example.supplychainx.service.production.ProductionOrderService;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     private final ProductionOrderRepository productionOrderRepository;
     private final RawMaterialRepository rawMaterialRepository;
     private final BillOfMaterialRepository billRepository;
+    private final ProductRepository productRepository;
     private final ProductionOrderMapper mapper;
 
     @Override
@@ -48,7 +51,33 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         if (order.getStatus() == ProductionStatusEnum.TERMINE)
             throw new RuntimeException("Impossible de modifier un ordre terminé.");
 
-        order.setStatus(dto.getStatus());
+        ProductionStatusEnum oldStatus = order.getStatus();
+        ProductionStatusEnum newStatus = dto.getStatus();
+
+
+        if (newStatus == ProductionStatusEnum.EN_PRODUCTION && oldStatus != ProductionStatusEnum.EN_PRODUCTION) {
+            List<BillOfMaterial> boms = billRepository.findByProductIdProduct(order.getProduct().getIdProduct());
+            for (BillOfMaterial bom : boms) {
+                RawMaterial material = bom.getMaterial();
+                int required = bom.getQuantity() * order.getQuantity();
+                if (material.getStock() < required) {
+                    throw new RuntimeException("Stock insuffisant pour la matière : " + material.getName());
+                }
+                material.setStock(material.getStock() - required);
+                rawMaterialRepository.save(material);
+            }
+        }
+
+        if (newStatus == ProductionStatusEnum.TERMINE && oldStatus != ProductionStatusEnum.TERMINE) {
+            Product product = order.getProduct();
+            if (product.getStock() == null) {
+                product.setStock(0);
+            }
+            product.setStock(product.getStock() + order.getQuantity());
+            productRepository.save(product);
+        }
+
+        order.setStatus(newStatus);
         return mapper.toDto(productionOrderRepository.save(order));
     }
 
