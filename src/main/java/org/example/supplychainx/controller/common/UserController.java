@@ -1,6 +1,8 @@
 package org.example.supplychainx.controller.common;
 
 import org.example.supplychainx.dto.common.UserDTO;
+import org.example.supplychainx.model.common.RoleEnum;
+import org.example.supplychainx.security.CheckRole;
 import org.example.supplychainx.service.common.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
+    @CheckRole({RoleEnum.ADMIN})
     public UserDTO create(@RequestBody UserDTO dto) {
         return userService.create(dto);
     }
