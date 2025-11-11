@@ -1,4 +1,9 @@
 services:
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
   mysql:
     image: mysql:8.0
     container_name: supplychainx-db
