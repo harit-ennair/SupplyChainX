@@ -21,7 +21,7 @@ public interface SupplierMapper {
 
     default List<Long> mapMaterialsToIds(List<RawMaterial> materials) {
         if (materials == null) {
-            return null;
+            return List.of();
         }
         return materials.stream()
                 .map(RawMaterial::getIdMaterial)

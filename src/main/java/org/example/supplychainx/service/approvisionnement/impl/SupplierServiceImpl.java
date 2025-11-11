@@ -2,6 +2,7 @@ package org.example.supplychainx.service.approvisionnement.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.approvisionnement.SupplierDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.approvisionnement.SupplierMapper;
 import org.example.supplychainx.model.approvisionnement.RawMaterial;
 import org.example.supplychainx.model.approvisionnement.Supplier;
@@ -45,7 +46,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public SupplierDTO update(Long id, SupplierDTO dto) {
         Supplier supplier = supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+                .orElseThrow(() -> new BusinessException("Supplier not found"));
 
         supplier.setName(dto.getName());
         supplier.setContact(dto.getContact());
@@ -67,14 +68,14 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public void delete(Long id) {
         Supplier supplier = supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+                .orElseThrow(() -> new BusinessException("Supplier not found !"));
 
         boolean hasActiveOrders = supplyOrderRepository.findBySupplierIdSupplier(id)
                 .stream()
                 .anyMatch(order -> order.getStatus() != SupplyOrderStatusEnum.RECUE);
 
         if (hasActiveOrders) {
-            throw new RuntimeException("Impossible de supprimer le fournisseur: il a des commandes actives.");
+            throw new BusinessException("Impossible de supprimer le fournisseur: il a des commandes actives.");
         }
 
         supplierRepository.delete(supplier);
@@ -84,7 +85,7 @@ public class SupplierServiceImpl implements SupplierService {
     public SupplierDTO getById(Long id) {
         return supplierRepository.findById(id)
                 .map(supplierMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+                .orElseThrow(() -> new BusinessException("Supplier not found !!"));
     }
 
     @Override

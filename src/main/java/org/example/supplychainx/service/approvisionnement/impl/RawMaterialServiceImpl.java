@@ -2,6 +2,7 @@ package org.example.supplychainx.service.approvisionnement.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.approvisionnement.RawMaterialDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.approvisionnement.RawMaterialMapper;
 import org.example.supplychainx.repository.approvisionnement.RawMaterialRepository;
 import org.example.supplychainx.repository.approvisionnement.SupplyMaterialRepository;
@@ -40,7 +41,7 @@ public class RawMaterialServiceImpl implements RawMaterialService {
                             existing.setUnit(dto.getUnit());
                             return rawMaterialRepository.save(existing);
                         })
-                        .orElseThrow(() -> new RuntimeException("Matière première non trouvée"))
+                        .orElseThrow(() -> new BusinessException("Matière première non trouvée"))
         );
     }
 
@@ -51,7 +52,7 @@ public class RawMaterialServiceImpl implements RawMaterialService {
                 .anyMatch(sm -> sm.getMaterial().getIdMaterial().equals(id));
 
         if (usedInOrders) {
-            throw new RuntimeException("Impossible de supprimer la matière : utilisée dans une commande.");
+            throw new BusinessException("Impossible de supprimer la matière : utilisée dans une commande.");
         }
 
         rawMaterialRepository.deleteById(id);
@@ -61,7 +62,7 @@ public class RawMaterialServiceImpl implements RawMaterialService {
     public RawMaterialDTO getById(Long id) {
         return mapper.toDto(
                 rawMaterialRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Matière première non trouvée"))
+                        .orElseThrow(() -> new BusinessException("Matière première non trouvée !"))
         );
     }
 

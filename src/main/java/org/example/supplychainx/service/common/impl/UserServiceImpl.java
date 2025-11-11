@@ -1,6 +1,7 @@
 package org.example.supplychainx.service.common.impl;
 
 import org.example.supplychainx.dto.common.UserDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.common.UserMapper;
 import org.example.supplychainx.model.common.RoleEnum;
 import org.example.supplychainx.model.common.User;
@@ -17,13 +18,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-//    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO create(UserDTO dto) {
 
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Un utilisateur avec cet email existe déjà.");
+            throw new BusinessException("Un utilisateur avec cet email existe déjà.");
         }
 
         User user = userMapper.toEntity(dto);
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO update(Long id, UserDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+                .orElseThrow(() -> new BusinessException("Utilisateur introuvable"));
 
 
         user.setFirstName(dto.getFirstName());
@@ -55,11 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+                .orElseThrow(() -> new BusinessException("Utilisateur introuvable !"));
 
 
         if (user.getRole() == RoleEnum.ADMIN) {
-            throw new RuntimeException("Impossible de supprimer un administrateur.");
+            throw new BusinessException("Impossible de supprimer un administrateur.");
         }
 
         userRepository.delete(user);
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getById(Long id) {
         return userRepository.findById(id)
                 .map(userMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+                .orElseThrow(() -> new BusinessException("Utilisateur introuvable !!"));
     }
 
     @Override

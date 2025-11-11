@@ -1,6 +1,7 @@
 package org.example.supplychainx.service.production.impl;
 
 import org.example.supplychainx.dto.production.BillOfMaterialDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.production.BillOfMaterialMapper;
 import org.example.supplychainx.model.production.BillOfMaterial;
 import org.example.supplychainx.model.production.Product;
@@ -27,10 +28,10 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     public BillOfMaterialDTO create(BillOfMaterialDTO dto) {
 
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("Produit introuvable (ID=" + dto.getProductId() + ")"));
+                .orElseThrow(() -> new BusinessException("Produit introuvable (ID=" + dto.getProductId() + ")"));
 
         RawMaterial material = materialRepository.findById(dto.getMaterialId())
-                .orElseThrow(() -> new RuntimeException("Matière introuvable (ID=" + dto.getMaterialId() + ")"));
+                .orElseThrow(() -> new BusinessException("Matière introuvable (ID=" + dto.getMaterialId() + ")"));
 
         BillOfMaterial bom = mapper.toEntity(dto);
         bom.setProduct(product);
@@ -42,13 +43,13 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     @Override
     public BillOfMaterialDTO update(Long id, BillOfMaterialDTO dto) {
         BillOfMaterial bom = billRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BOM introuvable"));
+                .orElseThrow(() -> new BusinessException("BOM introuvable"));
 
         bom.setQuantity(dto.getQuantity());
 
         if (dto.getMaterialId() != null && !dto.getMaterialId().equals(bom.getMaterial().getIdMaterial())) {
             RawMaterial material = materialRepository.findById(dto.getMaterialId())
-                    .orElseThrow(() -> new RuntimeException("Nouvelle matière introuvable"));
+                    .orElseThrow(() -> new BusinessException("Nouvelle matière introuvable"));
             bom.setMaterial(material);
         }
 
@@ -58,7 +59,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     @Override
     public void delete(Long id) {
         BillOfMaterial bom = billRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BOM introuvable"));
+                .orElseThrow(() -> new BusinessException("BOM introuvable !"));
 
         billRepository.delete(bom);
     }
@@ -67,7 +68,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     public BillOfMaterialDTO getById(Long id) {
         return billRepository.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("BOM introuvable"));
+                .orElseThrow(() -> new BusinessException("BOM introuvable !!"));
     }
 
     @Override
@@ -77,12 +78,4 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
                 .map(mapper::toDto)
                 .toList();
     }
-
-//    @Override
-//    public List<BillOfMaterialDTO> getByProduct(Long productId) {
-//        return billRepository.findByProductIdProduct(productId)
-//                .stream()
-//                .map(mapper::toDto)
-//                .toList();
-//    }
 }

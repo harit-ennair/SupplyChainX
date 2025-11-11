@@ -1,6 +1,7 @@
 package org.example.supplychainx.service.production.impl;
 
 import org.example.supplychainx.dto.production.ProductDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.production.ProductMapper;
 import org.example.supplychainx.model.production.Product;
 import org.example.supplychainx.repository.production.ProductRepository;
@@ -24,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
         boolean exists = productRepository.existsByNameIgnoreCase(dto.getName());
         if (exists) {
-            throw new RuntimeException("Un produit avec ce nom existe déjà : " + dto.getName());
+            throw new BusinessException("Un produit avec ce nom existe déjà : " + dto.getName());
         }
 
         Product product = mapper.toEntity(dto);
@@ -36,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO update(Long id, ProductDTO dto) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produit introuvable (ID=" + id + ")"));
+                .orElseThrow(() -> new BusinessException("Produit introuvable (ID=" + id + ")"));
 
         product.setName(dto.getName());
         product.setCost(dto.getCost());
@@ -49,11 +50,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produit introuvable"));
+                .orElseThrow(() -> new BusinessException("Produit introuvable"));
 
         boolean hasOrders = productionOrderRepository.existsByProductIdProduct(id);
         if (hasOrders) {
-            throw new RuntimeException("Impossible de supprimer le produit : des ordres de production existent.");
+            throw new BusinessException("Impossible de supprimer le produit : des ordres de production existent.");
         }
 
         productRepository.delete(product);
@@ -63,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getById(Long id) {
         return productRepository.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Produit introuvable"));
+                .orElseThrow(() -> new BusinessException("Produit introuvable !"));
     }
 
     @Override
@@ -73,12 +74,4 @@ public class ProductServiceImpl implements ProductService {
                 .map(mapper::toDto)
                 .toList();
     }
-
-//    @Override
-//    public List<ProductDTO> searchByName(String name) {
-//        return productRepository.findByNameContainingIgnoreCase(name)
-//                .stream()
-//                .map(mapper::toDto)
-//                .toList();
-//    }
 }

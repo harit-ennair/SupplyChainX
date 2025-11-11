@@ -2,6 +2,7 @@ package org.example.supplychainx.service.approvisionnement.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.approvisionnement.SupplyOrderDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.approvisionnement.SupplyMaterialMapper;
 import org.example.supplychainx.mapper.approvisionnement.SupplyOrderMapper;
 import org.example.supplychainx.model.approvisionnement.SupplyMaterial;
@@ -40,9 +41,9 @@ public class SupplyOrderServiceImpl implements SupplyOrderService {
     @Override
     public SupplyOrderDTO update(Long id, SupplyOrderDTO dto) {
         SupplyOrder order = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+                .orElseThrow(() -> new BusinessException("Commande introuvable"));
         if (order.getStatus() == SupplyOrderStatusEnum.RECUE)
-            throw new RuntimeException("Impossible de modifier une commande déjà reçue.");
+            throw new BusinessException("Impossible de modifier une commande déjà reçue.");
 
         if (dto.getStatus() != null) {
             order.setStatus(dto.getStatus());
@@ -67,9 +68,9 @@ public class SupplyOrderServiceImpl implements SupplyOrderService {
     @Override
     public void delete(Long id) {
         SupplyOrder order = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+                .orElseThrow(() -> new BusinessException("Commande introuvable !"));
         if (order.getStatus() == SupplyOrderStatusEnum.RECUE)
-            throw new RuntimeException("Impossible de supprimer une commande déjà reçue.");
+            throw new BusinessException("Impossible de supprimer une commande déjà reçue.");
 
         repo.delete(order);
     }
@@ -78,7 +79,7 @@ public class SupplyOrderServiceImpl implements SupplyOrderService {
     public SupplyOrderDTO getById(Long id) {
         return repo.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+                .orElseThrow(() -> new BusinessException("Commande introuvable !!"));
     }
 
     @Override

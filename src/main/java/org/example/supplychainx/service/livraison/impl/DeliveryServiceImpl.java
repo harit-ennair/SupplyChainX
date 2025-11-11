@@ -2,6 +2,7 @@ package org.example.supplychainx.service.livraison.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.livraison.DeliveryDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.livraison.DeliveryMapper;
 import org.example.supplychainx.model.livraison.Delivery;
 import org.example.supplychainx.model.livraison.Order;
@@ -26,9 +27,9 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public DeliveryDTO create(DeliveryDTO dto) {
         Order order = orderRepo.findById(dto.getOrderId())
-                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+                .orElseThrow(() -> new BusinessException("Commande introuvable"));
         if (order.getStatus() != OrderStatusEnum.EN_ROUTE && order.getStatus() != OrderStatusEnum.EN_PREPARATION) {
-            throw new RuntimeException("Commande non prête pour la livraison.");
+            throw new BusinessException("Commande non prête pour la livraison.");
         }
 
         Delivery delivery = mapper.toEntity(dto);
@@ -40,7 +41,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public DeliveryDTO update(Long id, DeliveryDTO dto) {
      Delivery delivery = deliveryRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
+                .orElseThrow(() -> new BusinessException("Livraison introuvable"));
 
         delivery.setStatus(dto.getStatus());
         return mapper.toDto(deliveryRepo.save(delivery));
@@ -49,9 +50,9 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public void delete(Long id) {
         Delivery delivery = deliveryRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
+                .orElseThrow(() -> new BusinessException("Livraison introuvable !"));
         if (delivery.getStatus() != DeliveryStatusEnum.PLANIFIEE)
-            throw new RuntimeException("Impossible d'annuler une livraison déjà en cours ou terminée.");
+            throw new BusinessException("Impossible d'annuler une livraison déjà en cours ou terminée.");
 
         deliveryRepo.delete(delivery);
     }
@@ -60,7 +61,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public DeliveryDTO getById(Long id) {
         return deliveryRepo.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
+                .orElseThrow(() -> new BusinessException("Livraison introuvable !!"));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.example.supplychainx.security;
 
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.model.common.User;
 import org.example.supplychainx.model.common.RoleEnum;
 import org.example.supplychainx.repository.common.UserRepository;
@@ -23,25 +24,25 @@ public class SecurityAspect {
     @Before("@annotation(checkRole)")
     public void authorize(JoinPoint joinPoint, CheckRole checkRole) {
         var attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attrs == null) throw new RuntimeException("Unauthorized: no request context");
+        if (attrs == null) throw new BusinessException("Unauthorized: no request context");
 
         var request = attrs.getRequest();
         String email = request.getHeader("X-User-Email");
         String password = request.getHeader("X-User-Password");
 
         if (email == null || password == null)
-            throw new RuntimeException("Unauthorized: missing headers");
+            throw new BusinessException("Unauthorized: missing headers");
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Unauthorized: user not found"));
+                .orElseThrow(() -> new BusinessException("Unauthorized: user not found"));
 
         if (!user.getPassword().equals(password))
-            throw new RuntimeException("Unauthorized: invalid password");
+            throw new BusinessException("Unauthorized: invalid password");
 
         boolean allowed = Arrays.stream(checkRole.value())
                 .anyMatch(role -> role == user.getRole());
 
         if (!allowed)
-            throw new RuntimeException("Forbidden: access denied for role " + user.getRole());
+            throw new BusinessException("Forbidden: access denied for role " + user.getRole());
     }
 }

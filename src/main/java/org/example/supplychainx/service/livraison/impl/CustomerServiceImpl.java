@@ -1,6 +1,7 @@
 package org.example.supplychainx.service.livraison.impl;
 
 import org.example.supplychainx.dto.livraison.CustomerDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.livraison.CustomerMapper;
 import org.example.supplychainx.model.livraison.Customer;
 import org.example.supplychainx.model.livraison.OrderStatusEnum;
@@ -26,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         boolean exists = customerRepository.existsByEmailIgnoreCase(dto.getEmail());
         if (exists) {
-            throw new RuntimeException("Un client avec ce Email existe déjà : " + dto.getEmail());
+            throw new BusinessException("Un client avec ce Email existe déjà : " + dto.getEmail());
         }
 
         Customer customer = mapper.toEntity(dto);
@@ -38,11 +39,11 @@ public class CustomerServiceImpl implements CustomerService {
 
         boolean exists = customerRepository.existsByEmailIgnoreCase(dto.getEmail());
         if (exists) {
-            throw new RuntimeException("Un client avec ce Email existe déjà : " + dto.getEmail());
+            throw new BusinessException("Un client avec ce Email existe déjà : " + dto.getEmail());
         }
 
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client introuvable (ID=" + id + ")"));
+                .orElseThrow(() -> new BusinessException("Client introuvable (ID=" + id + ")"));
 
         customer.setName(dto.getName());
         customer.setAddress(dto.getAddress());
@@ -54,13 +55,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void delete(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client introuvable"));
+                .orElseThrow(() -> new BusinessException("Client introuvable"));
 
         boolean hasActiveOrders = clientOrderRepository.existsByCustomerIdCustomerAndStatusIn(
                 id, Set.of(OrderStatusEnum.EN_PREPARATION, OrderStatusEnum.EN_ROUTE));
 
         if (hasActiveOrders) {
-            throw new RuntimeException("Impossible de supprimer le client : il a des commandes actives");
+            throw new BusinessException("Impossible de supprimer le client : il a des commandes actives");
         }
 
         customerRepository.delete(customer);
@@ -70,7 +71,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getById(Long id) {
         return customerRepository.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Client introuvable"));
+                .orElseThrow(() -> new BusinessException("Client introuvable !"));
     }
 
     @Override
@@ -81,11 +82,4 @@ public class CustomerServiceImpl implements CustomerService {
                 .toList();
     }
 
-//    @Override
-//    public List<CustomerDTO> searchByName(String name) {
-//        return customerRepository.findByNameContainingIgnoreCase(name)
-//                .stream()
-//                .map(mapper::toDto)
-//                .toList();
-//    }
 }

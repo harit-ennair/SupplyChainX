@@ -2,6 +2,7 @@ package org.example.supplychainx.service.approvisionnement.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.approvisionnement.SupplyMaterialDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.approvisionnement.SupplyMaterialMapper;
 import org.example.supplychainx.model.approvisionnement.SupplyMaterial;
 import org.example.supplychainx.repository.approvisionnement.SupplyMaterialRepository;
@@ -30,13 +31,13 @@ public class SupplyMaterialServiceImpl implements SupplyMaterialService {
     @Override
     public SupplyMaterialDTO update(Long id, SupplyMaterialDTO dto) {
         SupplyMaterial supplyMaterial = supplyMaterialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supply Material not found"));
+                .orElseThrow(() -> new BusinessException("Supply Material not found"));
 
         supplyMaterial.setQuantity(dto.getQuantity());
 
         if (dto.getMaterialId() != null) {
             RawMaterial material = rawMaterialRepository.findById(dto.getMaterialId())
-                    .orElseThrow(() -> new RuntimeException("Raw Material not found"));
+                    .orElseThrow(() -> new BusinessException("Raw Material not found"));
             supplyMaterial.setMaterial(material);
         }
 
@@ -46,7 +47,7 @@ public class SupplyMaterialServiceImpl implements SupplyMaterialService {
     @Override
     public void delete(Long id) {
         SupplyMaterial supplyMaterial = supplyMaterialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supply Material not found"));
+                .orElseThrow(() -> new BusinessException("Supply Material not found !"));
 
         supplyMaterialRepository.delete(supplyMaterial);
     }
@@ -55,7 +56,7 @@ public class SupplyMaterialServiceImpl implements SupplyMaterialService {
     public SupplyMaterialDTO getById(Long id) {
         return supplyMaterialRepository.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Supply Material not found"));
+                .orElseThrow(() -> new BusinessException("Supply Material not found !!"));
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.example.supplychainx.service.production.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.production.ProductionOrderDTO;
+import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.production.ProductionOrderMapper;
 import org.example.supplychainx.model.approvisionnement.RawMaterial;
 import org.example.supplychainx.model.production.BillOfMaterial;
@@ -35,7 +36,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             RawMaterial material = bom.getMaterial();
             int required = bom.getQuantity() * dto.getQuantity();
             if (material.getStock() < required) {
-                throw new RuntimeException("Stock insuffisant pour la matière : " + material.getName());
+                throw new BusinessException("Stock insuffisant pour la matière : " + material.getName());
             }
         }
 
@@ -47,9 +48,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     @Override
     public ProductionOrderDTO update(Long id, ProductionOrderDTO dto) {
         ProductionOrder order = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordre introuvable"));
+                .orElseThrow(() -> new BusinessException("Ordre introuvable"));
         if (order.getStatus() == ProductionStatusEnum.TERMINE)
-            throw new RuntimeException("Impossible de modifier un ordre terminé.");
+            throw new BusinessException("Impossible de modifier un ordre terminé.");
 
         ProductionStatusEnum oldStatus = order.getStatus();
         ProductionStatusEnum newStatus = dto.getStatus();
@@ -61,7 +62,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
                 RawMaterial material = bom.getMaterial();
                 int required = bom.getQuantity() * order.getQuantity();
                 if (material.getStock() < required) {
-                    throw new RuntimeException("Stock insuffisant pour la matière : " + material.getName());
+                    throw new BusinessException("Stock insuffisant pour la matière : " + material.getName());
                 }
                 material.setStock(material.getStock() - required);
                 rawMaterialRepository.save(material);
@@ -84,9 +85,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     @Override
     public void delete(Long id) {
         ProductionOrder order = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordre introuvable"));
+                .orElseThrow(() -> new BusinessException("Ordre introuvable !"));
         if (order.getStatus() != ProductionStatusEnum.EN_ATTENTE)
-            throw new RuntimeException("Impossible de supprimer un ordre déjà lancé.");
+            throw new BusinessException("Impossible de supprimer un ordre déjà lancé.");
         productionOrderRepository.delete(order);
     }
 
@@ -94,7 +95,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     public ProductionOrderDTO getById(Long id) {
         return productionOrderRepository.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Ordre introuvable"));
+                .orElseThrow(() -> new BusinessException("Ordre introuvable !!"));
     }
 
     @Override
