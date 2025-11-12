@@ -19,6 +19,24 @@ services:
     networks:
       - supplychainx-network
 
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8089:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=user
+      - PMA_PASSWORD=userpassword
+      - PMA_ARBITRARY=1
+      - UPLOAD_LIMIT=1024M
+      - MEMORY_LIMIT=1024M
+      - MAX_EXECUTION_TIME=300
+    networks:
+      - supplychainx-network
+
   app:
     build:
       context: .

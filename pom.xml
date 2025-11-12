@@ -21,10 +21,10 @@
         <java.version>17</java.version>
 
         <!-- Sonar + JaCoCo -->
-<!--        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
-<!--        <sonar.projectKey>SupplyChainX</sonar.projectKey>-->
-<!--        <sonar.host.url>http://localhost:9000</sonar.host.url>-->
-<!--        <sonar.login>TON_TOKEN_ICI</sonar.login>-->
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.projectKey>SupplyChainX</sonar.projectKey>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.login>sqa_2f53e7d6d6054e5922b78f37e90a1c66f6c617d9</sonar.login>
     </properties>
 
     <dependencies>
