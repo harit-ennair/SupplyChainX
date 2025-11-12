@@ -21,10 +21,10 @@
         <java.version>17</java.version>
 
         <!-- Sonar + JaCoCo -->
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.projectKey>SupplyChainX</sonar.projectKey>
-        <sonar.host.url>http://localhost:9000</sonar.host.url>
-        <sonar.login>sqa_2f53e7d6d6054e5922b78f37e90a1c66f6c617d9</sonar.login>
+<!--        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
+<!--        <sonar.projectKey>SupplyChainX</sonar.projectKey>-->
+<!--        <sonar.host.url>http://localhost:9000</sonar.host.url>-->
+<!--        <sonar.login>sqa_2f53e7d6d6054e5922b78f37e90a1c66f6c617d9</sonar.login>-->
     </properties>
 
     <dependencies>
@@ -76,6 +76,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- H2 Database for Tests -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

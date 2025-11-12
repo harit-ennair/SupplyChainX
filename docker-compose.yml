@@ -4,6 +4,7 @@ services:
     container_name: sonarqube
     ports:
       - "9000:9000"
+
   mysql:
     image: mysql:8.0
     container_name: supplychainx-db
@@ -22,12 +23,11 @@ services:
   phpmyadmin:
     image: phpmyadmin
     restart: always
-    depends_on:
-      - mysql
     ports:
-      - "8089:80"
+
+    - "8089:80"
     environment:
-      - PMA_HOST=mysql
+      - PMA_HOST=db
       - PMA_USER=user
       - PMA_PASSWORD=userpassword
       - PMA_ARBITRARY=1
@@ -45,9 +45,9 @@ services:
     depends_on:
       - mysql
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/supplychainx?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: userpassword
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/supplyChainX?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpassword
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "8080:8080"
