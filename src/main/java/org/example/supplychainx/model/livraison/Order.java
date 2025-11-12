@@ -8,7 +8,7 @@ import org.example.supplychainx.model.production.Product;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "client_order") // لتجنب تعارض الاسم مع SQL keyword
+@Table(name = "client_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

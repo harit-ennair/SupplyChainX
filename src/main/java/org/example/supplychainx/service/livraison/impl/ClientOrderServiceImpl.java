@@ -2,16 +2,20 @@ package org.example.supplychainx.service.livraison.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.supplychainx.dto.livraison.ClientOrderDTO;
+import org.example.supplychainx.dto.production.ProductionOrderDTO;
 import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.livraison.ClientOrderMapper;
 import org.example.supplychainx.model.livraison.Order;
 import org.example.supplychainx.model.livraison.OrderStatusEnum;
 import org.example.supplychainx.model.production.Product;
+import org.example.supplychainx.model.production.ProductionOrder;
 import org.example.supplychainx.repository.livraison.ClientOrderRepository;
 import org.example.supplychainx.repository.production.ProductRepository;
 import org.example.supplychainx.service.livraison.ClientOrderService;
+import org.example.supplychainx.service.production.ProductionOrderService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,6 +25,7 @@ public class ClientOrderServiceImpl implements ClientOrderService {
     private final ClientOrderRepository orderRepo;
     private final ProductRepository productRepo;
     private final ClientOrderMapper mapper;
+//    private final ProductionOrderService productionOrderService;
 
     @Override
     public ClientOrderDTO create(ClientOrderDTO dto) {
@@ -28,10 +33,21 @@ public class ClientOrderServiceImpl implements ClientOrderService {
                 .orElseThrow(() -> new BusinessException("Produit introuvable"));
         if (product.getStock() < dto.getQuantity()) {
             throw new BusinessException("Stock insuffisant pour ce produit.");
+//        int stockNed =  dto.getQuantity() - product.getStock();
+//
+//            ProductionOrderDTO prodOrder = new ProductionOrderDTO();
+//            prodOrder.setProductId(product.getIdProduct());
+//            prodOrder.setQuantity(stockNed);
+//            prodOrder.setStartDate(LocalDate.now());
+//            prodOrder.setEndDate(LocalDate.of(2025,12,31));
+//
+//                    productionOrderService.create(prodOrder);
         }
-
+//        else {
         product.setStock(product.getStock() - dto.getQuantity());
         productRepo.save(product);
+
+//        }
 
         Order order = mapper.toEntity(dto);
         order.setStatus(OrderStatusEnum.EN_PREPARATION);

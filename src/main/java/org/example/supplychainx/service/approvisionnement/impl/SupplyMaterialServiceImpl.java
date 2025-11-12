@@ -10,11 +10,13 @@ import org.example.supplychainx.repository.approvisionnement.RawMaterialReposito
 import org.example.supplychainx.service.approvisionnement.SupplyMaterialService;
 import org.springframework.stereotype.Service;
 import org.example.supplychainx.model.approvisionnement.RawMaterial;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SupplyMaterialServiceImpl implements SupplyMaterialService {
 
     private final SupplyMaterialRepository supplyMaterialRepository;

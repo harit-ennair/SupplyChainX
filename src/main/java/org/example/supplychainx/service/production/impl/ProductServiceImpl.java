@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product product = mapper.toEntity(dto);
-        product.setStock(dto.getStock() != null ? dto.getStock() : 0); // Valeur par défaut
+        product.setStock(0);
 
         return mapper.toDto(productRepository.save(product));
     }
