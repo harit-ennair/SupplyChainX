@@ -20,11 +20,6 @@
     <properties>
         <java.version>17</java.version>
 
-        <!-- Sonar + JaCoCo -->
-<!--        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
-<!--        <sonar.projectKey>SupplyChainX</sonar.projectKey>-->
-<!--        <sonar.host.url>http://localhost:9000</sonar.host.url>-->
-<!--        <sonar.login>sqa_2f53e7d6d6054e5922b78f37e90a1c66f6c617d9</sonar.login>-->
     </properties>
 
     <dependencies>
@@ -126,18 +121,18 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-<!--                        <configuration>-->
-<!--                            <includes>-->
-<!--                                <include>org/example/supplychainx/Service/**</include>-->
-<!--                            </includes>-->
-<!--                            <excludes>-->
-<!--                                <exclude>org/example/supplychainx/Controller/**</exclude>-->
-<!--                                <exclude>org/example/supplychainx/Config/**</exclude>-->
-<!--                                <exclude>org/example/supplychainx/Model/**</exclude>-->
-<!--                                <exclude>org/example/supplychainx/DTO/**</exclude>-->
-<!--                                <exclude>org/example/supplychainx/Mappers/**</exclude>-->
-<!--                            </excludes>-->
-<!--                        </configuration>-->
+                        <configuration>
+                            <includes>
+                                <include>org/example/supplychainx/service/**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>org/example/supplychainx/controller/**</exclude>
+                                <exclude>org/example/supplychainx/model/**</exclude>
+                                <exclude>org/example/supplychainx/dto/**</exclude>
+                                <exclude>org/example/supplychainx/mapper/**</exclude>
+                                <exclude>org/example/supplychainx/SupplyChainXApplication.class</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
 
                 </executions>

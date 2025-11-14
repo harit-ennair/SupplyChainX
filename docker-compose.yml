@@ -15,8 +15,8 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_extensions:/opt/sonarqube/extensions
-    #    networks:
-    #      - mynetwork
+    networks:
+      - supplychainx-network
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:9000 || exit 1" ]
@@ -36,8 +36,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    #    networks:
-    #      - mynetwork
+    networks:
+      - supplychainx-network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U sonar -d sonar" ]
       interval: 10s
