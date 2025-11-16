@@ -27,4 +27,5 @@ public class Supplier {
         inverseJoinColumns = @JoinColumn(name = "material_id")
     )
     private List<RawMaterial> materials;
+
 }

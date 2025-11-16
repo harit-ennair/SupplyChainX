@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,6 +48,18 @@ public class SupplierControllerTest {
                 .content(objectMapper.writeValueAsString(supplier)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Test Supplier"));
+    }
+
+    @Test
+    public void getSupplierById_shouldReturn200() throws Exception {
+        Supplier supplier = new Supplier();
+        supplier.setName("Supplier A");
+        supplier = supplierRepository.save(supplier);
+
+        mockMvc.perform(get("/api/suppliers/" + supplier.getIdSupplier())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Supplier A"));
     }
 
 
