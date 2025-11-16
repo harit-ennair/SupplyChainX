@@ -1,6 +1,7 @@
 package org.example.supplychainx.service.production.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.supplychainx.dto.production.BillOfMaterialDTO;
 import org.example.supplychainx.dto.production.ProductionOrderDTO;
 import org.example.supplychainx.exception.BusinessException;
 import org.example.supplychainx.mapper.production.ProductionOrderMapper;
@@ -13,6 +14,7 @@ import org.example.supplychainx.repository.approvisionnement.RawMaterialReposito
 import org.example.supplychainx.repository.production.BillOfMaterialRepository;
 import org.example.supplychainx.repository.production.ProductRepository;
 import org.example.supplychainx.repository.production.ProductionOrderRepository;
+import org.example.supplychainx.service.approvisionnement.impl.SupplyOrderServiceImpl;
 import org.example.supplychainx.service.production.ProductionOrderService;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     private final BillOfMaterialRepository billRepository;
     private final ProductRepository productRepository;
     private final ProductionOrderMapper mapper;
+    private final BillOfMaterialServiceImpl billOfMaterialService;
 
     @Override
     public ProductionOrderDTO create(ProductionOrderDTO dto) {
@@ -37,6 +40,16 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             int required = bom.getQuantity() * dto.getQuantity();
             if (material.getStock() < required) {
                 throw new BusinessException("Stock insuffisant pour la matière : " + material.getName());
+//                int materialNid = required - material.getStock();
+//
+//                BillOfMaterialDTO billOfMaterial = new BillOfMaterialDTO();
+//
+//                billOfMaterial.setMaterialId(material.getIdMaterial());
+//                billOfMaterial.setProductId(dto.getProductId());
+//                billOfMaterial.setQuantity(materialNid);
+//
+//                billOfMaterialService.create(billOfMaterial);
+
             }
         }
 
