@@ -124,9 +124,9 @@
                         <configuration>
                             <includes>
                                 <include>org/example/supplychainx/service/**</include>
+                                <include>org/example/supplychainx/controller/**</include>
                             </includes>
                             <excludes>
-                                <exclude>org/example/supplychainx/controller/**</exclude>
                                 <exclude>org/example/supplychainx/model/**</exclude>
                                 <exclude>org/example/supplychainx/dto/**</exclude>
                                 <exclude>org/example/supplychainx/mapper/**</exclude>

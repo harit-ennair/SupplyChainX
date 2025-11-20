@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class SupplierControllerTest {
+class SupplierControllerTest {
 
 
     @Autowired
@@ -34,12 +34,12 @@ public class SupplierControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         supplierRepository.deleteAll();
     }
 
     @Test
-    public void testCreateSupplier() throws Exception {
+    void testCreateSupplier() throws Exception {
         Supplier supplier = new Supplier();
         supplier.setName("Test Supplier");
 
@@ -51,7 +51,7 @@ public class SupplierControllerTest {
     }
 
     @Test
-    public void getSupplierById_shouldReturn200() throws Exception {
+    void getSupplierById_shouldReturn200() throws Exception {
         Supplier supplier = new Supplier();
         supplier.setName("Supplier A");
         supplier = supplierRepository.save(supplier);

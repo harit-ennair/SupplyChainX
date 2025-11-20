@@ -1,0 +1,64 @@
+name: SupplyChainX CI/CD
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 1) Checkout du code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2) Setup JDK
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3) Cache Maven
+      - name: Cache Maven Packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      # 4) Build + Tests (unit + integration) + JaCoCo
+      - name: Build and run tests
+        run: mvn clean verify
+
+      # 5) Upload JaCoCo report
+      - name: Upload JaCoCo Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
+      # 6) Analyse SonarQube
+      - name: SonarQube Scan
+        run: mvn sonar:sonar \
+          -Dsonar.projectKey=SupplyChainX \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST }} \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+
+      # 7) Build Docker Image
+      - name: Build docker image
+        run: docker build -t supplychainx-backend .
+
+      # 8) Upload docker image as artifact (optional)
+      - name: Save Docker image
+        uses: actions/upload-artifact@v3
+        with:
+          name: supplychainx-image
+          path: |
+            supplychainx-backend.tar
