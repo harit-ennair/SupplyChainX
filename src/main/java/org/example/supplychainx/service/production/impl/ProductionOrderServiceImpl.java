@@ -29,7 +29,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     private final BillOfMaterialRepository billRepository;
     private final ProductRepository productRepository;
     private final ProductionOrderMapper mapper;
-    private final BillOfMaterialServiceImpl billOfMaterialService;
+//    private final BillOfMaterialServiceImpl billOfMaterialService;
 
     @Override
     public ProductionOrderDTO create(ProductionOrderDTO dto) {

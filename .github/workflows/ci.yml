@@ -11,24 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # -------------------------------------------------------
-      # 1) Checkout du code
-      # -------------------------------------------------------
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # -------------------------------------------------------
-      # 2) Setup JDK 17
-      # -------------------------------------------------------
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # -------------------------------------------------------
-      # 3) Cache Maven
-      # -------------------------------------------------------
       - name: Cache Maven dependencies
         uses: actions/cache@v4
         with:
@@ -37,24 +29,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      # -------------------------------------------------------
-      # 4) Build + Tests + JaCoCo
-      # -------------------------------------------------------
       - name: Build & Run Unit + Integration Tests
         run: mvn --batch-mode clean verify
 
-      # -------------------------------------------------------
-      # 5) Upload JaCoCo report
-      # -------------------------------------------------------
       - name: Upload JaCoCo Coverage Report
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco
 
-      # -------------------------------------------------------
-      # 6) SonarQube Analysis
-      # -------------------------------------------------------
       - name: SonarQube Scan
         run: |
           echo "Checking Sonar host reachability: ${SONAR_HOST_URL}"

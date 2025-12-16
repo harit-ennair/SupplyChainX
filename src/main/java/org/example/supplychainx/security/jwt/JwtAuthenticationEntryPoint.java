@@ -1,0 +1,4 @@
+package org.example.supplychainx.security.jwt;
+
+public class JwtAuthenticationEntryPoint {
+}
