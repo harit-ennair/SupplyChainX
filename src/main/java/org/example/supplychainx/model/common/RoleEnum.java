@@ -1,6 +1,7 @@
 package org.example.supplychainx.model.common;
 
 public enum RoleEnum {
+    USER,
     ADMIN,
     GESTIONNAIRE_APPROVISIONNEMENT,
     RESPONSABLE_ACHATS,

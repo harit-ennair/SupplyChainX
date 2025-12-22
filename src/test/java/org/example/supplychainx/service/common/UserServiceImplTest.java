@@ -27,12 +27,13 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
-    // 🧪 Test 1: création d’un utilisateur
+    // Test 1: création d’un utilisateur
     @Test
     void shouldCreateUserSuccessfully() {
         // Arrange
@@ -43,9 +44,9 @@ class UserServiceImplTest {
         dto.setPassword("1234");
         dto.setRole(RoleEnum.ADMIN);
 
-        User entity = new User(null, "Harit", "Ennair", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
-        User savedEntity = new User(1L, "Harit", "Ennair", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
-        UserDTO savedDTO = new UserDTO(1L, "Harit", "Ennair", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
+        User entity = new User(null,"harit", "Harit", "Ennair", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
+        User savedEntity = new User(1L,"harit", "Harit", "Ennair", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
+        UserDTO savedDTO = new UserDTO(1L,"harit", "Harit", "Ennair", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
 
         when(userMapper.toEntity(dto)).thenReturn(entity);
         when(userRepository.save(entity)).thenReturn(savedEntity);
@@ -62,19 +63,19 @@ class UserServiceImplTest {
         verify(userRepository, times(1)).save(entity);
     }
 
-    // 🧪 Test 2: récupérer tous les utilisateurs
+    // Test 2: récupération de tous les utilisateurs
     @Test
     void shouldReturnAllUsers() {
         // Arrange
         List<User> users = List.of(
-                new User(1L, "Admin", "One", "admin@supplyx.com", "1234", RoleEnum.ADMIN),
-                new User(2L, "John", "Doe", "john@supplyx.com", "1234", RoleEnum.CHEF_PRODUCTION)
+                new User(1L,"ahmad", "Admin", "One", "admin@supplyx.com", "1234", RoleEnum.ADMIN),
+                new User(2L,"john", "John", "Doe", "john@supplyx.com", "1234", RoleEnum.CHEF_PRODUCTION)
         );
 
         when(userRepository.findAll()).thenReturn(users);
         when(userMapper.toDto(any(User.class))).thenAnswer(inv -> {
             User u = inv.getArgument(0);
-            return new UserDTO(u.getIdUser(), u.getFirstName(), u.getLastName(), u.getEmail(), u.getPassword(), u.getRole());
+            return new UserDTO(u.getIdUser(),u.getUsername(), u.getFirstName(), u.getLastName(), u.getEmail(), u.getPassword(), u.getRole());
         });
 
         // Act
@@ -86,13 +87,13 @@ class UserServiceImplTest {
         verify(userRepository, times(1)).findAll();
     }
 
-    // 🧪 Test 3: mise à jour utilisateur existant
+    // Test 3: mise à jour utilisateur existant
     @Test
     void shouldUpdateUser() {
         // Arrange
         Long id = 1L;
-        User existingUser = new User(id, "Harit", "Old", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
-        UserDTO dto = new UserDTO(id, "Harit", "New", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
+        User existingUser = new User(id,"harit", "Harit", "Old", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
+        UserDTO dto = new UserDTO(id,"harit", "Harit", "New", "harit@supplyx.com", "1234", RoleEnum.ADMIN);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(existingUser)).thenReturn(existingUser);
@@ -106,12 +107,12 @@ class UserServiceImplTest {
         verify(userRepository, times(1)).save(existingUser);
     }
 
-    // 🧪 Test 4: suppression utilisateur
+    // Test 4: suppression utilisateur
     @Test
     void shouldDeleteUser() {
         // Arrange
         Long id = 1L;
-        User existingUser = new User(id, "John", "Doe", "john@supplyx.com", "1234", RoleEnum.CHEF_PRODUCTION);
+        User existingUser = new User(id,"john", "John", "Doe", "john@supplyx.com", "1234", RoleEnum.CHEF_PRODUCTION);
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
 
         // Act

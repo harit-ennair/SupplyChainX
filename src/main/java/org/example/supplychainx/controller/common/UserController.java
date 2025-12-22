@@ -16,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @CheckRole({RoleEnum.ADMIN})
+//    @CheckRole({RoleEnum.ADMIN})
     public UserDTO create(@RequestBody UserDTO dto) {
         return userService.create(dto);
     }
